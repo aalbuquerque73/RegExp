@@ -1,0 +1,183 @@
+div.board {
+	border: #000066 solid 1px;
+	padding: 3px;
+	margin: 5px;
+	border-radius: 5px;
+}
+.test {
+	
+}
+.regexp {
+	
+}
+.cases {
+	
+}
+.case {
+	
+}
+div.command {
+	margin-top: 10px;
+	margin: 5px;
+	padding: 7px;
+	background-color: rgba(64,128,64, .5);
+	border-radius: 5px;
+}
+div.test.regexp {
+	position: relative;
+	border: #006600 solid 1px;
+	border-radius: 5px;
+	margin-top: 16px;
+}
+div.test.regexp > label {
+	font-size: small;
+	position: absolute;
+	top: -22px;
+	left: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	background-color: #006600;
+	padding: 3px 5px;
+	color: #ceceff;
+}
+div.test.regexp input.regexp {
+	width: 100%;
+	border-radius: 5px;
+	padding: 1px 5px;
+	font-family: courier-new, sans-serif;
+}
+div.test.cases.command {
+	margin: 0;
+	padding: 0;
+	background-color: transparent;
+}
+div.test.cases.command .panel {
+	display: inline-block;
+	width: 49%;
+	text-align: center;
+}
+div.test.cases.command .panel button {
+	width: 100px;
+	margin: 3px 5px;
+	background-color: #006600;
+	background: linear-gradient(#060, #030);
+	border-radius: 5px;
+	color: #cecefe;
+	border: #00aa00 outset 2px;
+	box-shadow: 0px 3px 5px #000;
+	text-shadow: 0 -1px 0 #000;
+	-webkit-transition: all 150ms ease;
+	transition: all 150ms ease;
+}
+div.test.cases.command .panel button[disabled]:hover,
+div.test.cases.command .panel button[disabled]:focus {
+	background: linear-gradient(#060, #030);
+	-webkit-animation: none;
+	animation: none;
+}
+div.test.cases.command .panel button:hover,
+div.test.cases.command .panel button:focus {
+	background: linear-gradient(#070, #040);
+	-webkit-animation: pulsate 1.2s linear infinite;
+	animation: pulsate 1.2s linear infinite;
+}
+div.test.cases.command .panel button:active {
+	border: #00aa00 inset 2px;
+	box-shadow: 0px 0px 0px #000;
+	text-shadow: 0 0px 0 #000;
+	-webkit-transform: translateY(3px);	
+	transform: translateY(3px);
+	-webkit-animation: none;
+	animation: none;
+}
+div.test.cases.command .panel button[disabled]:active {
+	border: #00aa00 outset 2px;
+	box-shadow: 0px 3px 5px #000;
+	text-shadow: 0 -1px 0 #000;
+	-webkit-transform: none;	
+	transform: none;
+	-webkit-transition: all 150ms ease;
+	transition: all 150ms ease;
+}
+@-webkit-keyframes pulsate {
+    0%   { color: #ddd; text-shadow: 0 -1px 0 #000; }
+    50%  { color: #fff; text-shadow: 0 -1px 0 #444, 0 0 5px #ffd, 0 0 8px #fff; }
+    100% { color: #ddd; text-shadow: 0 -1px 0 #000; }
+}    
+@keyframes pulsate {
+    0%   { color: #ddd; text-shadow: 0 -1px 0 #000; }
+    50%  { color: #fff; text-shadow: 0 -1px 0 #444, 0 0 5px #ffd, 0 0 8px #fff; }
+    100% { color: #ddd; text-shadow: 0 -1px 0 #000; }
+}
+.test.edit.case button {
+	width: 100px;
+	margin: 3px 5px;
+	background-color: #006600;
+	background: linear-gradient(#060, #030);
+	border-radius: 5px;
+	color: #cecefe;
+	border: #00aa00 outset 2px;
+	box-shadow: 0px 3px 5px #000;
+	text-shadow: 0 -1px 0 #000;
+	-webkit-transition: all 150ms ease;
+	transition: all 150ms ease;
+}
+.test.edit.case button:hover,
+.test.edit.case button:focus {
+	background: linear-gradient(#070, #040);
+	-webkit-animation: pulsate 1.2s linear infinite;
+	animation: pulsate 1.2s linear infinite;
+}
+.test.edit.case button:active {
+	border: #00aa00 inset 2px;
+	box-shadow: 0px 0px 0px #000;
+	text-shadow: 0 0px 0 #000;
+	-webkit-transform: translateY(3px);	
+	transform: translateY(3px);
+	-webkit-animation: none;
+	animation: none;
+}
+div.test.cases div.test.case {
+	border-radius: 5px;
+	background-color: white;
+	padding: 1px 5px;
+	border: white inset 1px;
+}
+div.test.edit.case {
+	display: none;
+}
+div.test.edit.case input.edit {
+	width: 100%;
+	font-family: courier-new, arial;
+}
+.edit {
+	
+}
+.panel {
+	
+}
+.left {
+	
+}
+.right {
+	
+}
+.true:before {
+	color: #006600;
+	text-shadow: 0 -1px 0 #050;
+	content: "O ";
+}
+.false:before {
+	color: #660000;
+	text-shadow: 0 -1px 0 #500;
+	content: "O ";
+}
+.mark {
+	font-weight: bold;
+	color: #006600;
+	text-shadow: 0 -1px 0 #050;
+}
+.group {
+	font-style: italic;
+	text-decoration: underline;
+}
