@@ -3,6 +3,47 @@
  */
 
 (function() {
+	function matchText(node, regex, callback, excludeElements) { 
+
+	    excludeElements || (excludeElements = ['script', 'style', 'iframe', 'cavas']);
+	    
+	    var child = node.first();
+	   
+	    do {
+
+	        switch (child.nodeType()) {
+
+	        case 1:
+	            if (excludeElements.indexOf(child.tagName().toLowerCase()) > -1) {
+	                continue;
+	            }
+
+	            matchText(child, regex, callback, excludeElements);
+	            break;
+
+	        case 3:
+	           child.data().replace(regex, function(all) {
+	                var args = [].slice.call(arguments),
+	                    offset = args[args.length - 2],
+	                    newTextNode = child.splitText(offset);
+
+	                newTextNode.data(newTextNode.data().substr(all.length));
+
+	                callback.apply(window, [child].concat(args));
+
+	                child = newTextNode;
+	     
+	            });
+	            break;
+
+	        }
+
+	    } while (child = child.next());
+
+	    return node;
+
+	}
+	
 	function ViewModel() {
 		this._data = {
 				regexp: "",
@@ -67,13 +108,27 @@
 			};
 		ko.bindingHandlers.html = {
 			    init: function(element, valueAccessor, allBindings, bindingContext) {
-			    	//console.log("[init]", "html:", arguments);
+			    	console.log("[init]", "html:", arguments);
 			    	var value = valueAccessor();
 			    	var valueUnwrapped = ko.unwrap(value);
 			    	$(element).html(valueUnwrapped.toString());
 			    },
 			    update: function(element, valueAccessor, allBindings, bindingContext) {
-			    	//console.log("[update]", "html:", arguments);
+			    	console.log("[update]", "html:", arguments);
+			    	var value = valueAccessor();
+			    	var valueUnwrapped = ko.unwrap(value);
+			    	$(element).html(valueUnwrapped.toString());
+			    }
+			};
+		ko.bindingHandlers.RegExp = {
+			    init: function(element, valueAccessor, allBindings, bindingContext) {
+			    	console.log("[init]", "RegExp:", arguments);
+			    	var value = valueAccessor();
+			    	var valueUnwrapped = ko.unwrap(value);
+			    	$(element).html(valueUnwrapped.toString());
+			    },
+			    update: function(element, valueAccessor, allBindings, bindingContext) {
+			    	console.log("[update]", "RegExp:", arguments);
 			    	var value = valueAccessor();
 			    	var valueUnwrapped = ko.unwrap(value);
 			    	$(element).html(valueUnwrapped.toString());
@@ -82,37 +137,18 @@
 	}
 	ViewModel.prototype = {
 			runTestCases: function() {
-				function callback() {
-					console.log("[runTestCases]", "callback:", arguments);
-				}
-				function mark(all) {
-					console.log("[runTestCases]", "mark:", arguments);
-					String.prototype.splitText = function(n) {
-						return this;
-					};
-					var args = [].slice.call(arguments),
-						child = args[args.length - 1],
-						offset = args[args.length - 2],
-						newTextNode = child.splitText(offset);
-
-					newTextNode = newTextNode.substr(all.length);
-
-					callback.apply(window, [child].concat(args));
-
-					child = newTextNode;
-					console.log("[runTestCases]", offset);
-					
-					return '<span class="mark">'+all+'</span>';
-				}
+				
 				var self = this;
-				var regexp = new RegExp(ko.utils.unwrapObservable(ko.unwrap(this.regexp())), "i");
+				var regexpText = ko.unwrap(this.regexp());
+				var regexp = new RegExp(regexpText, "i");
 				var list = ko.unwrap(this.testCases());
-				console.log("[ViewModel::runTestCases]", this._data, this.regexp(), ko.unwrap(this.regexp()), list);
+				console.log("[ViewModel::runTestCases]", this._data, this.regexp(), regexpText, list);
 				_.each(list, function(testcase, key) {
 					console.log("[ViewModel::list.each]", arguments, testcase, key);
 					self.results.push({
 						test: regexp.test(testcase.data),
-						value: testcase.data.replace(regexp, mark)
+						regexp: regexp,
+						value: testcase.data
 					});
 				});
 			},
