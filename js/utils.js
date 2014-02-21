@@ -4,20 +4,44 @@
 
 (function() {
 	function Utils() {
-
 	}
 	Utils.prototype = {
 			type: function(val) {
 				return Object.prototype.toString.call(val).replace(/^\[object (.+)\]$/,"$1").toLowerCase();
 			},
 
-			merge: function (object, add) {
+			merge: function (object, add, callbacks) {
+				var self = this;
 				_.each(add, function(value, key) {
 					if(typeof(value)=="object") {
-						this[key] = this.type(value)=="array"?[]:{};
-						merge(this[key], value);
+						this[key] = self.type(value)=="array"?[]:{};
+						if(callbacks && callbacks._all && callbacks._all.before) {
+							callbacks._all.before(this[key]);
+						}
+						if(callbacks && callbacks.hasOwnProperty(key) && callbacks[key].before) {
+							callbacks[key].before(this[key]);
+						}
+						self.merge(this[key], value, (callbacks && callbacks.hasOwnProperty(key) && callbacks[key].children)?callbacks[key].children:null);
+						if(callbacks && callbacks.hasOwnProperty(key) && callbacks[key].after) {
+							callbacks[key].after(this[key]);
+						}
+						if(callbacks && callbacks._all && callbacks._all.after) {
+							callbacks._all.after(this[key]);
+						}
 					} else {
+						if(callbacks && callbacks._all && callbacks._all.before) {
+							callbacks._all.before(this[key]);
+						}
+						if(callbacks && callbacks.hasOwnProperty(key) && callbacks[key].before) {
+							callbacks[key].before(this[key]);
+						}
 						this[key] = value;
+						if(callbacks && callbacks.hasOwnProperty(key) && callbacks[key].after) {
+							callbacks[key].after(this[key]);
+						}
+						if(callbacks && callbacks._all && callbacks._all.after) {
+							callbacks._all.after(this[key]);
+						}
 					}
 				}, object);
 			}

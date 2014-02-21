@@ -10,6 +10,29 @@
 				testCases: [],
 				results: []
 		};
+		if(localStorage.data) {
+			var self = this;
+			Utils.merge(
+					this._data,
+					JSON.parse(localStorage.data),
+					{
+						testCases: {
+							children: {
+								_all: {
+									after: function(object) {
+										console.log("[testCases:after]", object);
+										object.select = function(data) {
+											console.log("[ViewModel::saveTestCases(select)]", self, data);
+											self._selected = data;
+											$('.test.cases.command .remove').removeAttr("disabled");
+										};
+									}
+								}
+							}
+						}
+					}
+			);
+		}
 		this._selected = null;
 		function observable(obj, data) {
 			_.each(data, function(value, key) {
@@ -25,6 +48,7 @@
 			obj[key] = ko.observable(value);
 		});
 		}
+		console.log("[ViewModel]", this._data);
 		observable(this, this._data);
 		
 		ko.bindingHandlers.className = {
@@ -58,33 +82,37 @@
 	}
 	ViewModel.prototype = {
 			runTestCases: function() {
-				function mark(data, test) {
+				function callback() {
+					console.log("[runTestCases]", "callback:", arguments);
+				}
+				function mark(all) {
 					console.log("[runTestCases]", "mark:", arguments);
-					if(test) {
-						if(Utils.type(test)=="array") {
-							var rpl = test[0];
-							_.each(test, function(value, index, list) {
-								if(index>0 && value) {
-									rpl = rpl.replace(value, '<span class="mark group">'+value+'</span>');
-								}
-								console.log("[runTestCases]", "mark:replace", rpl);
-							});
-							console.log("[runTestCases]", "mark:", data.replace(test[0], '<span class="mark">'+rpl+'</span>'));
-							return data.replace(test[0], '<span class="mark">'+rpl+'</span>');
-						}
-						return data.replace(test, '<span class="mark">'+test+'</span>');
-					}
-					return data;
+					String.prototype.splitText = function(n) {
+						return this;
+					};
+					var args = [].slice.call(arguments),
+						child = args[args.length - 1],
+						offset = args[args.length - 2],
+						newTextNode = child.splitText(offset);
+
+					newTextNode = newTextNode.substr(all.length);
+
+					callback.apply(window, [child].concat(args));
+
+					child = newTextNode;
+					console.log("[runTestCases]", offset);
+					
+					return '<span class="mark">'+all+'</span>';
 				}
 				var self = this;
 				var regexp = new RegExp(ko.utils.unwrapObservable(ko.unwrap(this.regexp())), "i");
 				var list = ko.unwrap(this.testCases());
-				console.log(this._data, this.regexp(), ko.unwrap(this.regexp()), list);
+				console.log("[ViewModel::runTestCases]", this._data, this.regexp(), ko.unwrap(this.regexp()), list);
 				_.each(list, function(testcase, key) {
-					console.log(arguments, testcase, key);
+					console.log("[ViewModel::list.each]", arguments, testcase, key);
 					self.results.push({
 						test: regexp.test(testcase.data),
-						value: mark(testcase.data, testcase.data.match(regexp), testcase.data.search(regexp))
+						value: testcase.data.replace(regexp, mark)
 					});
 				});
 			},
@@ -94,7 +122,7 @@
 				});
 			},
 			removeTestCase: function() {
-				console.log(this, this._selected);
+				console.log("[ViewModel::removeTestCases]", this, this._selected);
 				this.testCases.remove(this._selected);
 				this._selected = null;
 				$('.test.cases.command .remove').attr("disabled", "disabled");
@@ -105,7 +133,7 @@
 					this.testCases.push({
 						data: ko.utils.unwrapObservable(this.testcase),
 						select: function(data) {
-							console.log(self, data);
+							console.log("[ViewModel::saveTestCases(select)]", self, data);
 							self._selected = data;
 							$('.test.cases.command .remove').removeAttr("disabled");
 						}
@@ -128,11 +156,12 @@
 		console.log("window.load", sessionStorage, localStorage);
 	});
 	$(window).bind('beforeunload',function(){
-		localStorage.data = JSON.parse(model._data);
+		model._data.regexp = ko.utils.unwrapObservable(model.regexp);
+		model._data.results = [];
+		localStorage.data = JSON.stringify(model._data);
 	    return '';
 	});
 	$(window).unload(function() {
-		alert("Done here!");
-		sessionStorage.data = JSON.parse(model._data);
+		sessionStorage.data = JSON.stringify(model._data);
 	});
 }).call(this);

@@ -3,8 +3,6 @@
  */
 
 (function() {
-	console.log("Utils", global);
-
 	function Utils() {
 
 	}
@@ -14,11 +12,41 @@
 			},
 
 			merge: function (object, add) {
+				var This = this;
 				_.each(add, function(value, key) {
+					if(This.type(key)=="string" &&
+						"type"==key.toLowerCase() && 
+						"merge"==key.toLowerCase() && 
+						"update"==key.toLowerCase()) {
+						return;
+					}
 					if(typeof(value)=="object") {
-						this[key] = this.type(value)=="array"?[]:{};
-						merge(this[key], value);
+						this[key] = This.type(value)=="array"?[]:{};
+						This.merge(this[key], value);
 					} else {
+						this[key] = value;
+					}
+				}, object);
+			},
+			update: function(object, add, space) {
+				var This = this;
+				if(typeof(space)=="undefined") {
+					space = "";
+				}
+				_.each(add, function(value, key) {
+					if(This.type(key)=="string" &&
+						"type"==key.toLowerCase() && 
+						"merge"==key.toLowerCase() && 
+						"update"==key.toLowerCase()) {
+						return;
+					}
+					if(typeof(value)=="object") {
+						console.log(space, key, "= {");
+						this[key] = This.type(value)=="array"?[]:{};
+						This.update(this[key], value, space + " ");
+						console.log(space, "}");
+					} else {
+						console.log(space, key, "=", value);
 						this[key] = value;
 					}
 				}, object);
