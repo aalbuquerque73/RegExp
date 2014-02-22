@@ -134,6 +134,8 @@ div.test.cases.command .panel button[disabled]:active {
 	text-shadow: 0 0px 0 #000;
 	-webkit-transform: translateY(3px);	
 	transform: translateY(3px);
+	-webkit-transform: translateY(3px);	
+	transform: translateY(3px);
 	-webkit-animation: none;
 	animation: none;
 }
@@ -179,29 +181,53 @@ div.test.cases div.test.case div.editor div.command {
 	width: auto;
 	height: auto;
 	white-space: nowrap;
-	background-color: rgba(255,64,64, .25);
+	border: rgba(64,64,255, .20) solid 1px;
+	background-color: transparent;
 }
 div.test.cases div.test.case .editor button {
+	position: relative;
 	display: inline;
 	width: auto;
 	height: auto;
-	border: none;
+	border: transparent solid 1px;
+	border-radius: 5px;
+	background-color: transparent;
 	margin: 0;
-	padding: 0;
+	margin-left: 2px;
+	margin-bottom: 3px;
+	padding: 2px;
 	vertical-align: middle;
 	text-align: center;
+	box-shadow: 0px 3px 5px #000;
+	text-shadow: 0 -1px 0 #000;
+	-webkit-transition: all 150ms ease;
+	transition: top 150ms ease;
+}
+div.test.cases div.test.case .editor button:hover,
+div.test.cases div.test.case .editor button:focus {
+	background: linear-gradient(rgba(64,64,64, .10), rgba(64,127,64, .10));
+	background-color: rgba(64,64,64, .10);
+}
+div.test.cases div.test.case .editor button:active {
+	border: #00aa00 inset 2px;
+	box-shadow: 0px 0px 0px #000;
+	text-shadow: 0 0px 0 #000;
+	margin: 0;
+	-webkit-transform: translateY(3px);	
+	transform: translateY(3px);
 }
 div.test.cases div.test.case .editor input[type='text'] {
-	display: inline-block;
+	/*display: inline-block;*/
 	vertical-align: middle;
 	width: 90%;
 	margin: 0;
 	background-color: green;
+	font: inherit;
 }
 div.test.cases div.test.case .editor img {
 	display: inline-block;
 	background-position: center;
-	width: 1.5em;
+	width: 1.2em;
 	margin: 0;
 	vertical-align: middle;
 }

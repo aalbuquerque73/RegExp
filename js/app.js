@@ -187,11 +187,28 @@
 			
 			select: function(data) {
 				console.log("[ViewModel::select]", arguments);
+				if(model._selected) {
+					$('#editor'+model._selected.id).hide();
+				}
 				model._selected = data;
 				//$('#span'+data.id).fadeTo(0, 0);
 				//$('#span'+data.id).hide();
 				$('#editor'+data.id).show();
 				$('.test.cases.command .remove').removeAttr('disabled');
+			},
+			
+			edit: function(data) {
+				console.log("[ViewModel::edit]", arguments);
+				$('#input'+data.id).show(function() {
+					$(this).focus();
+				});
+			},
+			
+			remove: function(data) {
+				console.log("[ViewModel::remove]", arguments);
+				model.testCases.remove(data);
+				model._selected = null;
+				$('.test.cases.command .remove').attr("disabled", "disabled");
 			},
 			
 			nextId: function() {

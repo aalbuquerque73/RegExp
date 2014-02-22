@@ -42,6 +42,8 @@
 		<div class="test cases" data-bind="foreach: testCases">
 			<div class="test case" data-bind="attr: { id: 'div'+id }">
 				<span data-bind="text: data, attr: { id: 'span'+id }"></span>
+				<div class="clear-both"></div>
+				<div data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
 				<div class="editor" data-bind="attr: { id: 'editor'+id }">
 					<input class="display-none" type="text" data-bind="value: data, attr: { id: 'input'+id }" />
 					<div class="command">
@@ -49,8 +51,6 @@
 						<button data-bind="attr: { id: 'del'+id }, click: $parent.remove"><img src="images/icon-delete.png" /></button>
 					</div>
 				</div>
-				<div class="clear-both"></div>
-				<div data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
 			</div>
 		</div>
 	</div>
