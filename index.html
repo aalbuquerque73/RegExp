@@ -4,10 +4,10 @@
 		
 		<link rel="stylesheet" href="css/styles.css">
 		
-		<script type="text/javascript" src="js/lib/jquery-2.0.3-min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery-2.1.0.js"></script>
 		<script type="text/javascript" src="js/lib/jquery-tmpl.js"></script>
 		<script type="text/javascript" src="js/lib/underscore-min.js"></script>
-		<script type="text/javascript" src="js/lib/knockout-3.0.0.js"></script>
+		<script type="text/javascript" src="js/lib/knockout-3.0.0.debug.js"></script>
 		<script type="text/javascript" src="js/lib/knockout.mapping-2.0.js"></script>
 		
 		<script type="text/javascript" src="js/lib/jquery-utils.js"></script>
@@ -40,8 +40,17 @@
 			<button class="cancel" data-bind="click: cancelTestCase">Cancel</button>
 		</div>
 		<div class="test cases" data-bind="foreach: testCases">
-			<div class="test case" data-bind="text: data, click: select($data)"></div>
+			<div class="test case" data-bind="attr: { id: 'div'+id }">
+				<span data-bind="text: data, attr: { id: 'span'+id }"></span>
+				<div class="editor" data-bind="attr: { id: 'editor'+id }">
+					<input type="text" data-bind="value: data, attr: { id: 'input'+id }" />
+					<button><img src="images/save.png" /></button>
+				</div>
+				<div class="clear-both"></div>
+				<div data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
+			</div>
 		</div>
 	</div>
+	<div id="__regexp__"></div>
 	</body>
 </html>

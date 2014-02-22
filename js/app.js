@@ -3,150 +3,155 @@
  */
 
 (function() {
-	function matchText(node, regex, callback, excludeElements) { 
-
-	    excludeElements || (excludeElements = ['script', 'style', 'iframe', 'cavas']);
-	    
-	    var child = node.first();
-	   
-	    do {
-
-	        switch (child.nodeType()) {
-
-	        case 1:
-	            if (excludeElements.indexOf(child.tagName().toLowerCase()) > -1) {
-	                continue;
-	            }
-
-	            matchText(child, regex, callback, excludeElements);
-	            break;
-
-	        case 3:
-	           child.data().replace(regex, function(all) {
-	                var args = [].slice.call(arguments),
-	                    offset = args[args.length - 2],
-	                    newTextNode = child.splitText(offset);
-
-	                newTextNode.data(newTextNode.data().substr(all.length));
-
-	                callback.apply(window, [child].concat(args));
-
-	                child = newTextNode;
-	     
-	            });
-	            break;
-
-	        }
-
-	    } while (child = child.next());
-
-	    return node;
+	function ClassNameModel() {
 
 	}
-	
+	ClassNameModel.prototype = {
+			init: function(element, valueAccessor, allBindings, bindingContext) {
+				//console.log("[init]", "className:", arguments);
+				var value = valueAccessor();
+				var valueUnwrapped = ko.unwrap(value);
+				$(element).addClass(valueUnwrapped.toString());
+			},
+			update: function(element, valueAccessor, allBindings, bindingContext) {
+				//console.log("[update]", "className:", arguments);
+				var value = valueAccessor();
+				var valueUnwrapped = ko.unwrap(value);
+				$(element).addClass(valueUnwrapped.toString());
+			}
+	};
+	function HtmlModel() {
+
+	}
+	HtmlModel.prototype = {
+			init: function(element, valueAccessor, allBindings, bindingContext) {
+				//console.log("[init]", "html:", arguments);
+				var value = valueAccessor();
+				var valueUnwrapped = ko.unwrap(value);
+				$(element).html(valueUnwrapped.toString());
+			},
+			update: function(element, valueAccessor, allBindings, bindingContext) {
+				//console.log("[update]", "html:", arguments);
+				var value = valueAccessor();
+				var valueUnwrapped = ko.unwrap(value);
+				$(element).html(valueUnwrapped.toString());
+			}
+	};
+	function RegExpModel() {
+		this._data = {};
+	}
+	RegExpModel.prototype = {
+			init: function(element, valueAccessor, allBindings, bindingContext) {
+				console.log("[init]", "RegExp:", arguments);
+				var value = valueAccessor();
+				var valueUnwrapped = ko.unwrap(value);
+				//console.log("[init]", "RegExp:", element);
+				model.bindings.regexp._data[element] = {
+						value: valueUnwrapped,
+						element: $(element).html()
+				};
+			},
+			update: function(element, valueAccessor, allBindings, bindingContext) {
+				console.log("[update]", arguments);
+				var value = valueAccessor();
+				var valueUnwrapped = ko.unwrap(value);
+				var text = $(element).html();
+				var div = $(element);
+				div.empty();
+				var start = 0;
+				//var text = model.bindings.regexp._data[element].element;
+				console.log("[update]", "text:", text);
+				text.replace(new RegExp(valueUnwrapped, "i"), function(match) {
+					console.log("[update]", "RegExp:", arguments);
+					var offset = arguments[arguments.length-2];
+					div.append(text.substr(start, offset));
+					var group = "";
+					for(var i=1; i<arguments.length-2; ++i) {
+						//if(arguments[i]) {
+							group += "'" + arguments[i] + "',";
+						//}
+					}
+					while(group.substr(group.length-1)==",") {
+						group = group.substr(0, group.length-1);
+					}
+					if(group) {
+						group = "[" + group.trim(",") + "]";
+					}
+					
+					div.append('<span class="mark" title="'+group+'">'+match+'</span>');
+					start = offset+match.length;
+				});
+				if(start<text.length) {
+					div.append(text.substr(start));
+				}
+			}
+	};
+	function RelModel() {
+
+	}
+	RelModel.prototype = {
+			init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	            //console.log("[init]", "rel:", arguments);
+				var value = valueAccessor();
+				var valueUnwrapped = ko.unwrap(value);
+				$(element).attr('rel', valueUnwrapped);
+	        },
+			update: function(element, valueAccessor, allBindings, bindingContext) {
+				//console.log("[update]", "rel:", arguments);
+			}
+	};
+
 	function ViewModel() {
 		this._data = {
 				regexp: "",
 				testcase: "",
+				global_id: 0,
 				testCases: [],
 				results: []
 		};
 		if(localStorage.data) {
-			var self = this;
 			Utils.merge(
 					this._data,
-					JSON.parse(localStorage.data),
-					{
-						testCases: {
-							children: {
-								_all: {
-									after: function(object) {
-										console.log("[testCases:after]", object);
-										object.select = function(data) {
-											console.log("[ViewModel::saveTestCases(select)]", self, data);
-											self._selected = data;
-											$('.test.cases.command .remove').removeAttr("disabled");
-										};
-									}
-								}
-							}
-						}
-					}
+					JSON.parse(localStorage.data)
 			);
 		}
 		this._selected = null;
 		function observable(obj, data) {
 			_.each(data, function(value, key) {
-			if(Utils.type(value)=="array") {
-				obj[key] = ko.observableArray(value);
-				return;
-			}
-			if(Utils.type(value)=="obj") {
-				obj[key] = {};
-				observable(obj[key], value);
-				return;
-			}
-			obj[key] = ko.observable(value);
-		});
+				if(Utils.type(value)=="array") {
+					obj[key] = ko.observableArray(value);
+					return;
+				}
+				if(Utils.type(value)=="obj") {
+					obj[key] = {};
+					observable(obj[key], value);
+					return;
+				}
+				obj[key] = ko.observable(value);
+			});
 		}
 		console.log("[ViewModel]", this._data);
 		observable(this, this._data);
 		
-		ko.bindingHandlers.className = {
-			    init: function(element, valueAccessor, allBindings, bindingContext) {
-			    	//console.log("[init]", "className:", arguments);
-			    	var value = valueAccessor();
-			    	var valueUnwrapped = ko.unwrap(value);
-			    	$(element).addClass(valueUnwrapped.toString());
-			    },
-			    update: function(element, valueAccessor, allBindings, bindingContext) {
-			    	//console.log("[update]", "className:", arguments);
-			    	var value = valueAccessor();
-			    	var valueUnwrapped = ko.unwrap(value);
-			    	$(element).addClass(valueUnwrapped.toString());
-			    }
-			};
-		ko.bindingHandlers.html = {
-			    init: function(element, valueAccessor, allBindings, bindingContext) {
-			    	console.log("[init]", "html:", arguments);
-			    	var value = valueAccessor();
-			    	var valueUnwrapped = ko.unwrap(value);
-			    	$(element).html(valueUnwrapped.toString());
-			    },
-			    update: function(element, valueAccessor, allBindings, bindingContext) {
-			    	console.log("[update]", "html:", arguments);
-			    	var value = valueAccessor();
-			    	var valueUnwrapped = ko.unwrap(value);
-			    	$(element).html(valueUnwrapped.toString());
-			    }
-			};
-		ko.bindingHandlers.RegExp = {
-			    init: function(element, valueAccessor, allBindings, bindingContext) {
-			    	console.log("[init]", "RegExp:", arguments);
-			    	var value = valueAccessor();
-			    	var valueUnwrapped = ko.unwrap(value);
-			    	$(element).html(valueUnwrapped.toString());
-			    },
-			    update: function(element, valueAccessor, allBindings, bindingContext) {
-			    	console.log("[update]", "RegExp:", arguments);
-			    	var value = valueAccessor();
-			    	var valueUnwrapped = ko.unwrap(value);
-			    	$(element).html(valueUnwrapped.toString());
-			    }
-			};
+		this.bindings = {};
+		this.bindings.className = ko.bindingHandlers.className = new ClassNameModel();
+		this.bindings.html = ko.bindingHandlers.html = new HtmlModel();
+		this.bindings.regexp = ko.bindingHandlers.RegExp = new RegExpModel();
+		//this.bindings.click = ko.bindingHandlers.click = new ClickModel();
 	}
 	ViewModel.prototype = {
 			runTestCases: function() {
-				
+
 				var self = this;
 				var regexpText = ko.unwrap(this.regexp());
-				var regexp = new RegExp(regexpText, "i");
+				var regexp = regexpText;
 				var list = ko.unwrap(this.testCases());
 				console.log("[ViewModel::runTestCases]", this._data, this.regexp(), regexpText, list);
+				this.results.removeAll();
 				_.each(list, function(testcase, key) {
 					console.log("[ViewModel::list.each]", arguments, testcase, key);
 					self.results.push({
-						test: regexp.test(testcase.data),
+						test: new RegExp(regexp, "i").test(testcase.data),
 						regexp: regexp,
 						value: testcase.data
 					});
@@ -164,15 +169,10 @@
 				$('.test.cases.command .remove').attr("disabled", "disabled");
 			},
 			saveTestCase: function() {
-				var self = this;
 				if(this.testcase()!="") {
 					this.testCases.push({
 						data: ko.utils.unwrapObservable(this.testcase),
-						select: function(data) {
-							console.log("[ViewModel::saveTestCases(select)]", self, data);
-							self._selected = data;
-							$('.test.cases.command .remove').removeAttr("disabled");
-						}
+						id: this.nextId()
 					});
 				}
 				$('.test.edit.case').hide(function() {
@@ -181,11 +181,27 @@
 			},
 			cancelTestCase: function() {
 				$('.test.edit.case').hide(function() {
-					
+
 				});
+			},
+			
+			select: function(data) {
+				console.log("[ViewModel::select]", arguments);
+				model._selected = data;
+				//$('#span'+data.id).fadeTo(0, 0);
+				$('#span'+data.id).hide();
+				$('#input'+data.id).show();
+				$('.test.cases.command .remove').removeAttr('disabled');
+			},
+			
+			nextId: function() {
+				var id = this._data.global_id + 1;
+				++this._data.global_id;
+				
+				return id;
 			}
 	};
-	
+
 	var model = new ViewModel();
 	$(function() {
 		ko.applyBindings(model);
@@ -195,7 +211,7 @@
 		model._data.regexp = ko.utils.unwrapObservable(model.regexp);
 		model._data.results = [];
 		localStorage.data = JSON.stringify(model._data);
-	    return '';
+		return '';
 	});
 	$(window).unload(function() {
 		sessionStorage.data = JSON.stringify(model._data);
