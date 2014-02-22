@@ -189,8 +189,8 @@
 				console.log("[ViewModel::select]", arguments);
 				model._selected = data;
 				//$('#span'+data.id).fadeTo(0, 0);
-				$('#span'+data.id).hide();
-				$('#input'+data.id).show();
+				//$('#span'+data.id).hide();
+				$('#editor'+data.id).show();
 				$('.test.cases.command .remove').removeAttr('disabled');
 			},
 			

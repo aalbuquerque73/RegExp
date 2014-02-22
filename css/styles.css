@@ -16,7 +16,7 @@ div.board {
 .case {
 	
 }
-div.command {
+div.commands {
 	margin-top: 10px;
 	margin: 5px;
 	padding: 7px;
@@ -160,14 +160,26 @@ div.test.cases div.test.case div {
 	background-color: rgba(127,127,127, .25);
 }
 div.test.cases div.test.case div.editor {
-	position: relative;
-	display: block;
+	position: absolute;
+	display: none;
 	top: 0;
 	left: 0;
-	float: left;
 	height: auto;
 	width: 100%;
 	background-color: rgba(127,64,127, .25);
+}
+div.test.cases div.test.case div.editor div.command {
+	position: absolute;
+	display: inline-block;
+	top: 0;
+	right: 0;
+	left: auto;
+	margin: 0;
+	padding: 0;
+	width: auto;
+	height: auto;
+	white-space: nowrap;
+	background-color: rgba(255,64,64, .25);
 }
 div.test.cases div.test.case .editor button {
 	display: inline;
@@ -177,19 +189,21 @@ div.test.cases div.test.case .editor button {
 	margin: 0;
 	padding: 0;
 	vertical-align: middle;
-	background-color: green;
+	text-align: center;
 }
 div.test.cases div.test.case .editor input[type='text'] {
-	display: inline;
+	display: inline-block;
 	vertical-align: middle;
-	width: 80%;
+	width: 90%;
 	margin: 0;
 	background-color: green;
 }
 div.test.cases div.test.case .editor img {
-	display: inline;
-	width: 18%;
+	display: inline-block;
+	background-position: center;
+	width: 1.5em;
 	margin: 0;
+	vertical-align: middle;
 }
 div.test.edit.case {
 	display: none;
@@ -255,6 +269,9 @@ div.test.edit.case input.edit {
 }
 .clear-both {
 	clear: both;
+}
+.display-none {
+	display: none;
 }
 .__regexp__ {
 	border: black solid 1px;

@@ -20,7 +20,7 @@
 	<div class="board" data-bind="foreach: results">
 		<div class="line" data-bind="className: test, html: value, RegExp: regexp"></div>
 	</div>
-	<div class="command">
+	<div class="commands">
 		<div class="test regexp">
 			<label class="regexp">RegExp</label>
 			<input class="regexp" type="text" data-bind="value: regexp" />
@@ -43,8 +43,11 @@
 			<div class="test case" data-bind="attr: { id: 'div'+id }">
 				<span data-bind="text: data, attr: { id: 'span'+id }"></span>
 				<div class="editor" data-bind="attr: { id: 'editor'+id }">
-					<input type="text" data-bind="value: data, attr: { id: 'input'+id }" />
-					<button><img src="images/save.png" /></button>
+					<input class="display-none" type="text" data-bind="value: data, attr: { id: 'input'+id }" />
+					<div class="command">
+						<button data-bind="attr: { id: 'edit'+id }, click: $parent.edit"><img src="images/icon-edit.png" /></button>
+						<button data-bind="attr: { id: 'del'+id }, click: $parent.remove"><img src="images/icon-delete.png" /></button>
+					</div>
 				</div>
 				<div class="clear-both"></div>
 				<div data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
