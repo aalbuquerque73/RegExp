@@ -18,7 +18,7 @@
 	
 	<body>
 	<div class="board" data-bind="foreach: results">
-		<div class="line" data-bind="className: test, html: value, RegExp: regexp"></div>
+		<div class="line" data-bind="RegExp: $data"></div>
 	</div>
 	<div class="commands">
 		<div class="test regexp">
@@ -28,7 +28,6 @@
 		<div class="test cases command">
 			<div class="panel left">
 				<button class="add" data-bind="click: addTestCase">+</button>
-				<button class="remove" data-bind="click: removeTestCase" disabled="disabled">-</button>
 			</div>
 			<div class="panel right">
 				<button class="run" data-bind="click: runTestCases">Run</button>
@@ -43,12 +42,17 @@
 			<div class="test case" data-bind="attr: { id: 'div'+id }">
 				<span data-bind="text: data, attr: { id: 'span'+id }"></span>
 				<div class="clear-both"></div>
-				<div data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
+				<div></div>
+				<div class="selector" data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
 				<div class="editor" data-bind="attr: { id: 'editor'+id }">
-					<input class="display-none" type="text" data-bind="value: data, attr: { id: 'input'+id }" />
-					<div class="command">
-						<button data-bind="attr: { id: 'edit'+id }, click: $parent.edit"><img src="images/icon-edit.png" /></button>
-						<button data-bind="attr: { id: 'del'+id }, click: $parent.remove"><img src="images/icon-delete.png" /></button>
+					<input class="display-none" type="text" data-bind="value: data, attr: { id: 'input'+id }, event: { change: $parent.itemChanged }" />
+					<div data-bind="attr: { id: 'confirm_panel_'+id }" class="command confirm">
+						<button data-bind="attr: { id: 'save'+id }, click: $parent.save"><img src="images/icons/notification_done.png" /></button>
+						<button data-bind="attr: { id: 'cancel'+id }, click: $parent.cancel"><img src="images/icons/notification_error.png" /></button>
+					</div>
+					<div data-bind="attr: { id: 'edit_panel_'+id }" class="command edit">
+						<button data-bind="attr: { id: 'edit'+id }, click: $parent.edit"><img src="images/icons/notification_edit.png" /></button>
+						<button data-bind="attr: { id: 'del'+id }, click: $parent.remove"><img src="images/icons/notification_remove.png" /></button>
 					</div>
 				</div>
 			</div>

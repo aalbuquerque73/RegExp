@@ -161,6 +161,9 @@ div.test.cases div.test.case div {
 	height: 100%;
 	background-color: rgba(127,127,127, .25);
 }
+div.test.cases div.test.case div.selector {
+	background-color: transparent;
+}
 div.test.cases div.test.case div.editor {
 	position: absolute;
 	display: none;
@@ -183,6 +186,9 @@ div.test.cases div.test.case div.editor div.command {
 	white-space: nowrap;
 	border: rgba(64,64,255, .20) solid 1px;
 	background-color: transparent;
+}
+div.test.cases div.test.case div.editor div.command.confirm {
+	display: none;
 }
 div.test.cases div.test.case .editor button {
 	position: relative;
@@ -221,7 +227,8 @@ div.test.cases div.test.case .editor input[type='text'] {
 	vertical-align: middle;
 	width: 90%;
 	margin: 0;
-	background-color: green;
+	padding: 3px 0;
+	background-color: silver;
 	font: inherit;
 }
 div.test.cases div.test.case .editor img {
