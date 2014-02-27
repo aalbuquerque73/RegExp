@@ -41,6 +41,8 @@
 		},
 		initViews: function() {
 			this.views.Results = Backbone.View.extend({
+				collection: this.collections.Results,
+				
 				render: function() {
 					$('#resultsTemplate')
 					.tmpl(this.models.Result.toJSON())
@@ -50,6 +52,8 @@
 				}
 			});
 			this.views.Regexp = Backbone.View.extend({
+				collection: this.collections.TestCases,
+				
 				render: function() {
 					$('#regexpTemplate')
 					.tmpl(this.models.Regexp.toJSON())
