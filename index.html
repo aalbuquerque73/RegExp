@@ -34,24 +34,7 @@
 			<button class="save" data-bind="click: saveTestCase">Save</button>
 			<button class="cancel" data-bind="click: cancelTestCase">Cancel</button>
 		</div>
-		<div class="test cases" data-bind="foreach: testCases" id="textcases">
-			<div class="test case" data-bind="attr: { id: 'div'+id }">
-				<span data-bind="text: data, attr: { id: 'span'+id }"></span>
-				<div class="clear-both"></div>
-				<div></div>
-				<div class="selector" data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
-				<div class="editor" data-bind="attr: { id: 'editor'+id }">
-					<input class="display-none" type="text" data-bind="value: data, attr: { id: 'input'+id }, event: { change: $parent.itemChanged }" />
-					<div data-bind="attr: { id: 'confirm_panel_'+id }" class="command confirm">
-						<button data-bind="attr: { id: 'save'+id }, click: $parent.save"><img src="images/icons/notification_done.png" /></button>
-						<button data-bind="attr: { id: 'cancel'+id }, click: $parent.cancel"><img src="images/icons/notification_error.png" /></button>
-					</div>
-					<div data-bind="attr: { id: 'edit_panel_'+id }" class="command edit">
-						<button data-bind="attr: { id: 'edit'+id }, click: $parent.edit"><img src="images/icons/notification_edit.png" /></button>
-						<button data-bind="attr: { id: 'del'+id }, click: $parent.remove"><img src="images/icons/notification_remove.png" /></button>
-					</div>
-				</div>
-			</div>
+		<div class="test cases" id="textcases">
 		</div>
 	</div>
 	<div id="__regexp__"></div>

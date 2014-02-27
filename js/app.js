@@ -3,32 +3,6 @@
  */
 
 (function() {
-	// function to cross-browser add a property to an object
-	function addProperty(object, label, getter, setter) {
-	    if (object.defineProperty){
-	      object.defineProperty(object, label, {getter: getter, setter: setter});
-	    }
-	    else {
-	        object.__defineGetter__(label, getter);
-	        object.__defineSetter__(label, setter);
-	    }
-	}
-	function Wrapper(model) {
-        var _self = this;
-
-        var setupProps = function(props) {
-            props.forEach(function(prop) {
-            	addProperty(
-            		_self,
-            		prop,
-            		function() { return model.get(prop); },
-            		function(val) { model.set(prop, val); }
-            	);
-            });
-        };
-        setupProps(_.keys(model.attributes));
-    }
-	
 	function ViewModel() {
 		this.models = {};
 		this.collections = {};
@@ -69,7 +43,7 @@
 			this.views.Results = Backbone.View.extend({
 				render: function() {
 					$('#resultsTemplate')
-					.tmpl(new Wrapper(this.models.Result))
+					.tmpl(this.models.Result.toJSON())
 					.appendTo(this.$el);
 					
 					return this;
@@ -78,7 +52,7 @@
 			this.views.Regexp = Backbone.View.extend({
 				render: function() {
 					$('#regexpTemplate')
-					.tmpl(new Wrapper(this.models.Regexp))
+					.tmpl(this.models.Regexp.toJSON())
 					.appendTo(this.$el);
 					
 					return this;
@@ -87,7 +61,7 @@
 			this.views.TestCases = Backbone.View.extend({
 				render: function() {
 					$('#testCaseTemplate')
-					.tmpl(new Wrapper(this.models.TestCase))
+					.tmpl(this.models.TestCase.toJSON())
 					.appendTo(this.$el);
 					
 					return this;
