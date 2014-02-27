@@ -4,25 +4,85 @@
 		
 		<link rel="stylesheet" href="css/styles.css">
 		
-		<script type="text/javascript" src="js/lib/jquery-2.0.3-min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery-2.1.0.js"></script>
 		<script type="text/javascript" src="js/lib/jquery-tmpl.js"></script>
 		<script type="text/javascript" src="js/lib/underscore-min.js"></script>
-		<script type="text/javascript" src="js/lib/knockout-3.0.0.js"></script>
-		<script type="text/javascript" src="js/lib/knockout.mapping-2.0.js"></script>
+		<script type="text/javascript" src="js/lib/backbone.js"></script>
+		
+		<script type="text/javascript" src="js/lib/jquery-utils.js"></script>
+		<script type="text/javascript" src="js/utils.js"></script>
 		
 		<script type="text/javascript" src="js/app.js"></script>
 	</head>
 	
 	<body>
-	<div class="board" data-bind="foreach: results">
+	<div class="board" id="results">
 	</div>
-	<div class="command">
-	<div class="test regexp"><label>RegExp</label><input type="text" data-bind="value: regexp" /></div>
-	<div class="test cases command">
-	<button data-bind="click: addTestCase">+</button>
-	<button data-bind="click: removeTestCase">-</button>
+	<div class="commands">
+		<div class="test regexp" id="regexp">
+		</div>
+		<div class="test cases command">
+			<div class="panel left">
+				<button class="add" data-bind="click: addTestCase">+</button>
+			</div>
+			<div class="panel right">
+				<button class="run" data-bind="click: runTestCases">Run</button>
+			</div>
+		</div>
+		<div class="test edit case">
+			<input class="edit" type="text" data-bind="value: testcase" />
+			<button class="save" data-bind="click: saveTestCase">Save</button>
+			<button class="cancel" data-bind="click: cancelTestCase">Cancel</button>
+		</div>
+		<div class="test cases" data-bind="foreach: testCases" id="textcases">
+			<div class="test case" data-bind="attr: { id: 'div'+id }">
+				<span data-bind="text: data, attr: { id: 'span'+id }"></span>
+				<div class="clear-both"></div>
+				<div></div>
+				<div class="selector" data-bind="attr: { id: 'div'+id }, click: $parent.select"></div>
+				<div class="editor" data-bind="attr: { id: 'editor'+id }">
+					<input class="display-none" type="text" data-bind="value: data, attr: { id: 'input'+id }, event: { change: $parent.itemChanged }" />
+					<div data-bind="attr: { id: 'confirm_panel_'+id }" class="command confirm">
+						<button data-bind="attr: { id: 'save'+id }, click: $parent.save"><img src="images/icons/notification_done.png" /></button>
+						<button data-bind="attr: { id: 'cancel'+id }, click: $parent.cancel"><img src="images/icons/notification_error.png" /></button>
+					</div>
+					<div data-bind="attr: { id: 'edit_panel_'+id }" class="command edit">
+						<button data-bind="attr: { id: 'edit'+id }, click: $parent.edit"><img src="images/icons/notification_edit.png" /></button>
+						<button data-bind="attr: { id: 'del'+id }, click: $parent.remove"><img src="images/icons/notification_remove.png" /></button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div class="test cases" data-bind="foreach: testCases"></div>
+	<div id="__regexp__"></div>
+	
+	<script id="resultsTemplate" type="text/x-jquery-tmpl">
+	<div class="line">${text}</div>
+	</script>
+	
+	<script id="regexpTemplate" type="text/x-jquery-tmpl">
+	<label class="regexp">RegExp</label>
+	<input class="regexp" type="text" value="${text}" />
+	</script>
+	
+	<script id="testCaseTemplate" type="text/x-jquery-tmpl">
+	<div class="test case" id="div${id}">
+		<span id="span${id}">${data}</span>
+		<div class="clear-both"></div>
+		<div></div>
+		<div class="selector" id="div${id}"></div>
+		<div class="editor" id="editor${id}">
+			<input class="display-none" type="text" id="input${id}" value="${data}" />
+			<div id="confirm_panel${id}" class="command confirm">
+				<button id="save${id}"><img src="images/icons/notification_done.png" /></button>
+				<button id="cancel${id}"><img src="images/icons/notification_error.png" /></button>
+			</div>
+			<div id="edit_panel_${id}" class="command edit">
+				<button id="edit${id}"><img src="images/icons/notification_edit.png" /></button>
+				<button id="del${id}"><img src="images/icons/notification_remove.png" /></button>
+			</div>
+		</div>
 	</div>
+	</script>
 	</body>
 </html>
