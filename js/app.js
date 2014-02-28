@@ -42,6 +42,7 @@
 		initViews: function() {
 			this.views.Results = Backbone.View.extend({
 				collection: this.collections.Results,
+				el:'#results',
 				
 				render: function() {
 					$('#resultsTemplate')
@@ -52,7 +53,7 @@
 				}
 			});
 			this.views.Regexp = Backbone.View.extend({
-				collection: this.collections.TestCases,
+				model: this.models.Regexp,
 				
 				render: function() {
 					$('#regexpTemplate')
@@ -62,12 +63,26 @@
 					return this;
 				}
 			});
-			this.views.TestCases = Backbone.View.extend({
+			var TestCaseView = Backbone.View.extend({
+				events: {},
+				tagName: 'div',
+				className: 'test case',
+				
 				render: function() {
 					$('#testCaseTemplate')
 					.tmpl(this.models.TestCase.toJSON())
 					.appendTo(this.$el);
 					
+					return this;
+				}
+			});
+			this.views.TestCases = Backbone.View.extend({
+				collection: this.collections.TestCases,
+				el: '#textcases',
+				
+				render: function() {
+					var items = this.model.get('items');
+					_.each(items, function() {});
 					return this;
 				}
 			});
