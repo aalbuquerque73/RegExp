@@ -13,6 +13,8 @@
 			this.initModels();
 			this.initCollections();
 			this.initViews();
+			
+			this.regexp = new this.views.Regexp();
 		},
 		initModels: function() {
 			this.models.Result = Backbone.Model.extend({
@@ -43,9 +45,10 @@
 			this.views.Results = Backbone.View.extend({
 				collection: this.collections.Results,
 				el:'#results',
+				template: $.template('#resultsTemplate'),
 				
 				render: function() {
-					$('#resultsTemplate')
+					this.template
 					.tmpl(this.models.Result.toJSON())
 					.appendTo(this.$el);
 					
@@ -54,9 +57,10 @@
 			});
 			this.views.Regexp = Backbone.View.extend({
 				model: this.models.Regexp,
+				template: $.template('#regexpTemplate'),
 				
 				render: function() {
-					$('#regexpTemplate')
+					this.template
 					.tmpl(this.models.Regexp.toJSON())
 					.appendTo(this.$el);
 					
@@ -67,9 +71,10 @@
 				events: {},
 				tagName: 'div',
 				className: 'test case',
+				template: $.template('#testCaseTemplate'),
 				
 				render: function() {
-					$('#testCaseTemplate')
+					this.template
 					.tmpl(this.models.TestCase.toJSON())
 					.appendTo(this.$el);
 					
@@ -82,7 +87,9 @@
 				
 				render: function() {
 					var items = this.model.get('items');
-					_.each(items, function() {});
+					_.each(items, function() {
+						
+					});
 					return this;
 				}
 			});
@@ -90,6 +97,7 @@
 	};
 	
 	$(function() {
-		
+		var view = new ViewModel();
+		view.init();
 	});
 }).call(this);
