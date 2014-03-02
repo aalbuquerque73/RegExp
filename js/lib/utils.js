@@ -3,8 +3,6 @@
  */
 
 (function() {
-	console.log("Utils", global);
-
 	function Utils() {
 
 	}

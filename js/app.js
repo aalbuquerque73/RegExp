@@ -1,8 +1,13 @@
 /*
- * App Layer
+ * Application Layer
  */
 
 (function() {
+	_.templateSettings = {
+			interpolate : /\{\{(.+?)\}\}/g,
+			variable: "rc"
+		};
+	
 	function ViewModel() {
 		this.models = {};
 		this.collections = {};
@@ -14,25 +19,45 @@
 			this.initCollections();
 			this.initViews();
 			
-			this.regexp = new this.views.Regexp();
+			this.regexp = {
+					m: new this.models.Regexp()
+			};
+			this.regexp.v = new this.views.Regexp({el:'#regexp', model: this.regexp.m});
+			
+			console.log("[ViewModel]", this);
 		},
 		initModels: function() {
 			this.models.Result = Backbone.Model.extend({
+				initialize: function() {
+					console.log("[Model]", this);
+				},
+				
 				defaults: {
 					regexp: null,
 					text: ""
 				}
 			});
 			this.models.TestCase = Backbone.Model.extend({
+				initialize: function() {
+					console.log("[Model]", this);
+				},
+				
 				defaults: {
 					id: 0,
 					data: ""
 				}
 			});
 			this.models.Regexp = Backbone.Model.extend({
-				text: ""
+				initialize: function() {
+					console.log("[Model]", this);
+				},
+				
+				defaults: {
+					text: ""
+				}
 			});
 		},
+		
 		initCollections: function() {
 			this.collections.Results = Backbone.Collection.extend({
 				model: this.models.Result
@@ -41,6 +66,7 @@
 				model: this.models.TestCase
 			});
 		},
+		
 		initViews: function() {
 			this.views.Results = Backbone.View.extend({
 				collection: this.collections.Results,
@@ -56,17 +82,25 @@
 				}
 			});
 			this.views.Regexp = Backbone.View.extend({
-				model: this.models.Regexp,
-				template: $.template('#regexpTemplate'),
+				el: '#regexp',
+				regexpTmpl: _.template($('#regexpTemplate').html()),
+				
+				initialize: function() {
+					console.log("[View]", this);
+					this.model.bind('change', _.bind(this.render, this));
+					this.render();
+				},
 				
 				render: function() {
-					this.template
-					.tmpl(this.models.Regexp.toJSON())
-					.appendTo(this.$el);
+					var template = this.regexpTmpl(this.model.toJSON());
+					console.log("[Regexp:render]", template);
+					
+					this.$el.html(template);
 					
 					return this;
 				}
 			});
+			
 			var TestCaseView = Backbone.View.extend({
 				events: {},
 				tagName: 'div',
