@@ -8,6 +8,7 @@
 		<script type="text/javascript" src="js/lib/jquery-tmpl.js"></script>
 		<script type="text/javascript" src="js/lib/underscore-min.js"></script>
 		<script type="text/javascript" src="js/lib/backbone.js"></script>
+		<script type="text/javascript" src="js/lib/backbone.localStorage.js"></script>
 		
 		<script type="text/javascript" src="js/lib/jquery-utils.js"></script>
 		<script type="text/javascript" src="js/lib/utils.js"></script>
@@ -23,21 +24,24 @@
 		</div>
 		<div class="test cases command">
 			<div class="panel left">
-				<button class="add" data-bind="click: addTestCase">+</button>
+				<button id="add_testcase" class="add" data-bind="click: addTestCase">+</button>
 			</div>
 			<div class="panel right">
-				<button class="run" data-bind="click: runTestCases">Run</button>
+				<button id="run_testcase" class="run" data-bind="click: runTestCases">Run</button>
 			</div>
 		</div>
 		<div class="test edit case">
-			<input class="edit" type="text" data-bind="value: testcase" />
-			<button class="save" data-bind="click: saveTestCase">Save</button>
-			<button class="cancel" data-bind="click: cancelTestCase">Cancel</button>
 		</div>
 		<div class="test cases" id="textcases">
 		</div>
 	</div>
 	<div id="__regexp__"></div>
+	
+	<script id="editTestCaseTemplate" type="text/x-jquery-tmpl">
+		<input class="edit" type="text" />
+		<button class="save">Save</button>
+		<button class="cancel">Cancel</button>
+	</script>
 	
 	<script id="resultsTemplate" type="text/x-jquery-tmpl">
 	<div class="line"><%- text %></div>
