@@ -134,8 +134,6 @@ div.test.cases.command .panel button[disabled]:active {
 	text-shadow: 0 0px 0 #000;
 	-webkit-transform: translateY(3px);	
 	transform: translateY(3px);
-	-webkit-transform: translateY(3px);	
-	transform: translateY(3px);
 	-webkit-animation: none;
 	animation: none;
 }
