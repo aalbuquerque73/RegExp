@@ -3,15 +3,12 @@ requirejs.config({
     
     paths: {
     	jquery: 'lib/jquery-2.1.0',
-    	underscore: 'lib/underscore',
-    	handlebars: 'lib/handlebars-v1.3.0',
-    	template: 'lib/jquery-tmpl',
-    	knockout: 'lib/knockout-3.0.0',
-    	mapping: 'lib/knockout.mapping-2.0',
+    	underscore: 'lib/underscore-min',
     	backbone: 'lib/backbone',
     	localstorage: 'lib/backbone.localStorage',
     	sammy: 'lib/sammy',
     	utils: 'lib/utils',
+    	text: 'lib/text-2.0.10',
     	
     	app: 'app'
     },
@@ -21,18 +18,18 @@ requirejs.config({
     		deps: ['jquery'],
     		exports: "jQuery.fn.tmpl"
     	},
-    	'libs/underscore': {
+    	'underscore': {
             exports: '_'
         },
-        'libs/backbone': {
-            deps: ['libs/underscore', 'libs/jquery'],
+    	'backbone': {
+    		deps: ['jquery', 'underscore'],
             exports: 'Backbone'
         },
     	utils: {
     		exports: 'Utils'
     	},
     	app: {
-    		deps: ["knockout", "list"],
+    		deps: ['jquery', 'underscore', 'backbone'],
     		exports: "app"
     	}
     }
@@ -40,5 +37,5 @@ requirejs.config({
 
 requirejs(['app'],
 function(app) {
-	app.start();
+	//app.start();
 });

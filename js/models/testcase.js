@@ -1,5 +1,5 @@
 define(['underscore','backbone'],
-function(Backbone) {
+function(_, Backbone) {
 	return Backbone.Model.extend({
 		initialize: function() {
 			console.log("[TestCase]", this);
