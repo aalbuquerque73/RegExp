@@ -9,14 +9,15 @@ requirejs.config({
     	sammy: 'lib/sammy',
     	utils: 'lib/utils',
     	text: 'lib/text-2.0.10',
+    	template: 'plugins/template',
     	
     	app: 'app'
     },
     
     shim: {
     	template: {
-    		deps: ['jquery'],
-    		exports: "jQuery.fn.tmpl"
+    		deps: ['jquery', 'underscore'],
+    		exports: "T"
     	},
     	'underscore': {
             exports: '_'
@@ -37,5 +38,5 @@ requirejs.config({
 
 requirejs(['app'],
 function(app) {
-	//app.start();
+	app.start();
 });

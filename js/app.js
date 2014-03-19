@@ -10,17 +10,11 @@ define([
         'views/regexpview'
        ],
 function($, _, Backbone, R, RV) {
-	_.templateSettings = {
-			interpolate : /\{\{(.+?)\}\}/g,
-			variable: "rc"
-		};
-	function App() {
-		
-	}
-	App.prototype = Backbone.View.extend({
+	var App = Backbone.View.extend({
 		events: {},
 		
 		initialize: function() {
+			console.log("[App:initialize]", arguments);
 			this.models = {
 				regexp: new R()
 			};
@@ -30,7 +24,17 @@ function($, _, Backbone, R, RV) {
 		},
 		
 		render: function() {
-			
+			console.log("[App:render]", arguments, this.models);
+			for(view in this.views) {
+				this.views[view].render();
+			}
+		},
+		
+		start: function() {
+			console.log("[App:start]", arguments, this.models);
+			for(view in this.models) {
+				this.views[view].fetch();
+			}
 		}
 	});
 	
