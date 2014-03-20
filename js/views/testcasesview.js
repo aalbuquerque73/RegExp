@@ -2,11 +2,11 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'template!#regexpTemplate'
+  'template!#testCaseTemplate'
 ], function($, _, Backbone, tmpl){
 	return Backbone.View.extend({
-		el: '#regexp',
-		regexpTmpl: tmpl,
+		el: '#testCases',
+		tmpl: tmpl,
 		
 		events: {
 			"focus .edit"     : "edit",
@@ -15,14 +15,13 @@ define([
 		},
 		
 		initialize: function() {
-			console.log("[View:Regexp:initialize]", this);
-			this.model.bind('change', _.bind(this.render, this));
-			this.render();
+			this.listenTo(this.model, 'change', this.render);
+			this.listenTo(this.model, 'destroy', this.remove);
 		},
 		
 		render: function() {
 			var template = this.regexpTmpl(this.model.toJSON());
-			console.log("[Regexp:render]", template, this.model.toJSON());
+			console.log("[TestCases:render]", template, this.model.toJSON());
 			
 			this.$el.html(template);
 			this.input = this.$('.edit');

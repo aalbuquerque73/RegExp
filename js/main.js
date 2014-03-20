@@ -2,10 +2,12 @@ requirejs.config({
     baseUrl: 'js',
     
     paths: {
+    	console: "plugins/console",
     	jquery: 'lib/jquery-2.1.0',
     	underscore: 'lib/underscore-min',
     	backbone: 'lib/backbone',
     	localstorage: 'lib/backbone.localStorage',
+    	memory: "plugins/memory",
     	sammy: 'lib/sammy',
     	utils: 'lib/utils',
     	text: 'lib/text-2.0.10',
@@ -15,6 +17,9 @@ requirejs.config({
     },
     
     shim: {
+    	console: {
+    		exports: "console"
+    	},
     	template: {
     		deps: ['jquery', 'underscore'],
     		exports: "T"
@@ -36,7 +41,7 @@ requirejs.config({
     }
 });
 
-requirejs(['app'],
-function(app) {
+requirejs(['console', 'app'],
+function(console, app) {
 	app.start();
 });

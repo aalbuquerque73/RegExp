@@ -1,4 +1,4 @@
-define(['underscore','backbone', 'localstorage'],
+define(['underscore','backbone', 'memory'],
 function(_, Backbone, Store) {
 	return Backbone.Model.extend({
 		localStorage: new Store("regexp"),

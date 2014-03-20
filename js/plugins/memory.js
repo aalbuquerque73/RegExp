@@ -1,8 +1,7 @@
 /**
- * Backbone localStorage Adapter
+ * Backbone memory Adapter
  * Version 1.1.0
  *
- * https://github.com/jeromegn/Backbone.localStorage
  */
 (function (root, factory) {
 	if (typeof define === "function" && define.amd) {
@@ -16,7 +15,7 @@
 		factory(_, Backbone);
 	}
 }(this, function(_, Backbone) {
-//	A simple module to replace `Backbone.sync` with *localStorage*-based
+//	A simple module to replace `Backbone.sync` with *memory*-based
 //	persistence. Models are given GUIDS, and saved into a JSON object. Simple
 //	as that.
 
@@ -33,59 +32,61 @@
 		return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 	};
 
-//	Our Store is represented by a single JS object in *localStorage*. Create it
+//	Our Store is represented by a single JS object in *memory*. Create it
 //	with a meaningful name, like the name you'd give a table.
-//	window.Store is deprectated, use Backbone.LocalStorage instead
-	Backbone.LocalStorage = window.Store = function(name) {
-		console.log("[Backbone:LocalStorage:constructor]", arguments, window.localStorage);
+	Backbone.Memory = function(name) {
+		console.log("[Backbone:Memory:constructor]", arguments);
 		this.name = name;
-		var store = this.localStorage().getItem(this.name);
-		this.records = (store && store.split(",")) || [];
+		this.records = [];
+		this._data = {};
 	};
 
-	_.extend(Backbone.LocalStorage.prototype, {
+	_.extend(Backbone.Memory.prototype, {
 
 		// Save the current state of the **Store** to *localStorage*.
 		save: function() {
-			console.log("[Backbone:LocalStorage:save]", arguments);
-			this.localStorage().setItem(this.name, this.records.join(","));
+			console.log("[Backbone:Memory:save]", arguments);
 		},
 
 		// Add a model, giving it a (hopefully)-unique GUID, if it doesn't already
 		// have an id of it's own.
 		create: function(model) {
-			console.log("[Backbone:LocalStorage:create]", arguments);
+			console.log("[Backbone:Memory:create]", arguments);
 			if (!model.id) {
 				model.id = guid();
 				model.set(model.idAttribute, model.id);
 			}
-			this.localStorage().setItem(this.name+"-"+model.id, JSON.stringify(model));
-			this.records.push(model.id.toString());
+			var id = model.id.toString();
+			this._data[id] = model;
+			this.records.push(id);
 			this.save();
 			return this.find(model);
 		},
 
 		// Update a model by replacing its copy in `this.data`.
 		update: function(model) {
-			console.log("[Backbone:LocalStorage:update]", arguments);
-			this.localStorage().setItem(this.name+"-"+model.id, JSON.stringify(model));
-			if (!_.include(this.records, model.id.toString()))
-				this.records.push(model.id.toString()); this.save();
-				return this.find(model);
+			console.log("[Backbone:Memory:update]", arguments);
+			var id = model.id.toString();
+			this._data[id] = model;
+			if (!_.include(this.records, id)) {
+				this.records.push(id);
+				this.save();
+			}
+			return this.find(model);
 		},
 
 		// Retrieve a model from `this.data` by id.
 		find: function(model) {
-			console.log("[Backbone:LocalStorage:find]", arguments);
-			return this.jsonData(this.localStorage().getItem(this.name+"-"+model.id));
+			console.log("[Backbone:Memory:find]", arguments);
+			return this._data[model.id.toString()];
 		},
 
 		// Return the array of all models currently in storage.
 		findAll: function() {
-			console.log("[Backbone:LocalStorage:findAll]", arguments);
+			console.log("[Backbone:Memory:findAll]", arguments);
 			return _(this.records).chain()
 			.map(function(id){
-				return this.jsonData(this.localStorage().getItem(this.name+"-"+id));
+				return this._data[id];
 			}, this)
 			.compact()
 			.value();
@@ -93,19 +94,17 @@
 
 		// Delete a model from `this.data`, returning it.
 		destroy: function(model) {
-			console.log("[Backbone:LocalStorage:destroy]", arguments);
-			if (model.isNew())
+			console.log("[Backbone:Memory:destroy]", arguments);
+			if (model.isNew()) {
 				return false;
-			this.localStorage().removeItem(this.name+"-"+model.id);
+			}
+			var modelId = model.id.toString();
+			delete this._data[modelId];
 			this.records = _.reject(this.records, function(id){
-				return id === model.id.toString();
+				return id === modelId;
 			});
 			this.save();
 			return model;
-		},
-
-		localStorage: function() {
-			return localStorage;
 		},
 
 		// fix for "illegal access" error on Android when JSON.parse is passed null
@@ -118,8 +117,8 @@
 //	localSync delegate to the model or collection's
 //	*localStorage* property, which should be an instance of `Store`.
 //	window.Store.sync and Backbone.localSync is deprectated, use Backbone.LocalStorage.sync instead
-	Backbone.LocalStorage.sync = window.Store.sync = Backbone.localSync = function(method, model, options) {
-		console.log("[Backbone:LocalStorage:sync]", arguments);
+	Backbone.Memory.sync = Backbone.localSync = function(method, model, options) {
+		console.log("[Backbone:Memory:sync]", arguments);
 		var store = model.localStorage || model.collection.localStorage;
 
 		var resp = null, errorMessage = null, syncDfd = $.Deferred && $.Deferred(); //If $ is having Deferred - use it.
@@ -142,10 +141,7 @@
 			}
 
 		} catch(error) {
-			if (error.code === DOMException.QUOTA_EXCEEDED_ERR && window.localStorage.length === 0)
-				errorMessage = "Private browsing is unsupported";
-			else
-				errorMessage = error.message;
+			errorMessage = error.message;
 		}
 
 		if (resp) {
@@ -175,7 +171,7 @@
 	Backbone.ajaxSync = Backbone.sync;
 
 	Backbone.getSyncMethod = function(model) {
-		console.log("[Backbone:LocalStorage:getSyncMethod]", arguments);
+		console.log("[Backbone:Memory:getSyncMethod]", arguments);
 		if(model.localStorage || (model.collection && model.collection.localStorage)) {
 			return Backbone.localSync;
 		}
@@ -189,5 +185,5 @@
 		return Backbone.getSyncMethod(model).apply(this, [method, model, options]);
 	};
 
-	return Backbone.LocalStorage;
+	return Backbone.Memory;
 }));

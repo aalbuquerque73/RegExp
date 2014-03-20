@@ -312,3 +312,14 @@ div.test.edit.case input.edit {
 	border: black solid 1px;
 	background-color: rgba(127,127,127, .5);
 }
+#console {
+	font-family: Lucida Console, monospace;
+	font-size: 12px;
+}
+#console div {
+	border-bottom: 1px solid #efefef;
+	padding: 5px 3px 3px;
+}
+#console div span {
+	white-space: nowrap;
+}
