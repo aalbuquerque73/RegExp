@@ -10,9 +10,11 @@ define([
         'collections/testcases',
         'models/regexp',
         'models/testcase',
-        'views/regexpview'
+        'views/regexpview',
+        
+        'controllers/testcasecontroller'
        ],
-function($, _, Backbone, S, C, R, TC, RV) {
+function($, _, Backbone, S, C, R, TC, RV, TCC) {
 	var App = Backbone.View.extend({
 		events: {},
 		
@@ -33,6 +35,10 @@ function($, _, Backbone, S, C, R, TC, RV) {
 			};
 			this.views = {
 				regexp: new RV({el: '#regexp', model: this.models.regexp})
+			};
+			
+			this.controllers = {
+				testCases: new TCC()
 			};
 			
 			$(window).bind('beforeunload', function() {
