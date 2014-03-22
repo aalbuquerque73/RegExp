@@ -13,18 +13,6 @@
 	<div class="commands">
 		<div class="test regexp" id="regexp">
 		</div>
-		<div class="test cases command">
-			<div class="panel left">
-				<button id="add_testcase" class="add" data-bind="click: addTestCase">+</button>
-			</div>
-			<div class="panel right">
-				<button id="run_testcase" class="run" data-bind="click: runTestCases">Run</button>
-			</div>
-		</div>
-		<div class="test edit case">
-		</div>
-		<div class="test cases" id="textcases">
-		</div>
 	</div>
 	<div id="__regexp__"></div>
 	<div id="console"></div>
@@ -42,6 +30,21 @@
 	<script id="regexpTemplate" type="text/x-jquery-tmpl">
 	<label class="regexp">RegExp</label>
 	<input class="regexp edit" type="text" value="{{rc.text}}" />
+	</script>
+	
+	<script id="testCasesTemplate" type="text/x-jquery-tmpl">
+	<div class="test cases command">
+		<div class="panel left">
+			<button id="add_testcase" class="add" data-bind="click: addTestCase">+</button>
+		</div>
+		<div class="panel right">
+			<button id="run_testcase" class="run" data-bind="click: runTestCases">Run</button>
+		</div>
+	</div>
+	<div class="test edit case">
+	</div>
+	<div class="test cases" id="textcases">
+	</div>
 	</script>
 	
 	<script id="testCaseTemplate" type="text/x-jquery-tmpl">
